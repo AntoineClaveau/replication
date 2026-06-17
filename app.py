@@ -38,7 +38,7 @@ except (FileNotFoundError, NotADirectoryError, OSError):
     pass
 
 st.set_page_config(layout="wide")
-st.title("Symbioses industrielles — réseaux multi-étages (Folium) — logique pivot (n'importe quel étage)")
+st.title("Industrial symbiosis replication analysis")
 
 # ======================================================
 # DATA STRUCTURE
@@ -111,7 +111,7 @@ if "layer_dfs" not in st.session_state:
 if "pivot_layer" not in st.session_state:
     st.session_state.pivot_layer = 1
 if "pivot_mode" not in st.session_state:
-    st.session_state.pivot_mode = "Acteur pivot (selection)"
+    st.session_state.pivot_mode = "Pivot stakeholder (selection)"
 if "pivot_selected_idx" not in st.session_state:
     st.session_state.pivot_selected_idx = 0
 if "heatmap_data" not in st.session_state:
@@ -2181,7 +2181,7 @@ for ld in st.session_state.layer_defs:
 # SIDEBAR
 # ======================================================
 with st.sidebar:
-    st.header("Données")
+    st.header("Data")
     eprtr_path = st.text_input("EPRTR.csv", "EPRTR.csv")
     uww_path = st.text_input("UWWTPS.csv", "UWWTPS.csv")
 
@@ -2204,10 +2204,7 @@ with st.sidebar:
     uww_source = uww_upload if uww_upload is not None else uww_path
 
     st.divider()
-    st.header("Performance (anti explosion)")
-
-    st.divider()
-    st.header("Affichage")
+    st.header("Display")
 
     show_heatmap = st.checkbox(
         "Afficher la heatmap des réseaux",
@@ -2221,36 +2218,36 @@ with st.sidebar:
     st.divider()
     st.header("Pivot")
     pivot_layer = st.selectbox(
-        "Étage pivot",
+        "Pivot Stage",
         options=list(range(len(st.session_state.layer_defs))),
         index=min(max(st.session_state.pivot_layer, 0), len(st.session_state.layer_defs) - 1),
-        format_func=lambda i: f"Étage {i+1} — {st.session_state.layer_defs[i].get('label','')}"
+        format_func=lambda i: f"Stage {i+1} — {st.session_state.layer_defs[i].get('label','')}"
     )
     st.session_state.pivot_layer = int(pivot_layer)
 
     pivot_mode = st.selectbox(
-        "Mode de calcul",
-        options=["Acteur pivot (selection)", "Tous les acteurs du pivot"],
-        index=0 if st.session_state.pivot_mode == "Acteur pivot (selection)" else 1
+        "Calculation method",
+        options=["Pivot stakeholder (selection)", "All stakeholder in the pivot"],
+        index=0 if st.session_state.pivot_mode == "Pivot stakeholder (selection)" else 1
     )
     st.session_state.pivot_mode = pivot_mode
 
     pivot_search = st.text_input(
-        "Filtrer la liste des pivots (texte)",
+        "Filter the pivots list (text)",
         value="",
-        help="Filtre sur nom / code / pays pour retrouver rapidement un pivot."
+        help="Filter by name / code / country to quickly find a pivot."
     )
 
     st.divider()
-    st.header("Étages (layers)")
-    st.caption("Distance max est appliquée entre étages voisins (i -> i+1).")
-    st.caption("min_actors = nb minimal d'acteurs requis dans le rayon autour du centroïde de l'étage voisin.")
+    st.header("Stages")
+    st.caption("The maximum distance is applied between adjacent stages (i → i+1).")
+    st.caption("min_actors = the minimum number of actors required within the radius around the centroid of the neighbouring stage.")
 
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("Ajouter un etage"):
+        if st.button("Add a stage"):
             st.session_state.layer_defs.append({
-                "label": f"Étage {len(st.session_state.layer_defs)+1}",
+                "label": f"Stage {len(st.session_state.layer_defs)+1}",
                 "source": "EPRTR",
                 "codes": "",
                 "min_actors": 1,
@@ -2258,7 +2255,7 @@ with st.sidebar:
             })
             st.rerun()
     with c2:
-        if st.button("Supprimer dernier"):
+        if st.button("Delete last stage"):
             if len(st.session_state.layer_defs) > 2:
                 st.session_state.layer_defs.pop()
                 st.session_state.pivot_layer = min(
@@ -2268,14 +2265,14 @@ with st.sidebar:
                 st.rerun()
 
     for i, ld in enumerate(st.session_state.layer_defs):
-        st.markdown(f"### Étage {i+1}")
+        st.markdown(f"### Stage {i+1}")
         ld["label"] = st.text_input(
-            f"Label (étage {i+1})",
-            ld.get("label", f"Étage {i+1}"),
+            f"Label (stage {i+1})",
+            ld.get("label", f"stage {i+1}"),
             key=f"lbl_{i}"
         )
         ld["source"] = st.selectbox(
-            f"Source (étage {i+1})",
+            f"Source (stage {i+1})",
             ["EPRTR", "UWWTPS"],
             index=0 if ld.get("source", "EPRTR") == "EPRTR" else 1,
             key=f"src_{i}"
@@ -2286,7 +2283,7 @@ with st.sidebar:
 
             with c1:
                 ld["cap_min"] = st.number_input(
-                    "Capacité minimale UWWTPS",
+                    "Minimal capacity UWWTPS",
                     min_value=0.0,
                     value=float(ld.get("cap_min", 0.0)),
                     step=1000.0,
@@ -2295,7 +2292,7 @@ with st.sidebar:
 
             with c2:
                 ld["cap_max"] = st.number_input(
-                    "Capacité maximale UWWTPS",
+                    "Maximal capacity UWWTPS",
                     min_value=float(ld.get("cap_min", 0.0)),
                     value=float(ld.get("cap_max", 30000.0)),
                     step=1000.0,
@@ -2303,13 +2300,13 @@ with st.sidebar:
                 )
 
         ld["logic"] = st.selectbox(
-            "Logique entre types d'acteurs",
+            "Logic between types of stakeholders",
             ["AND", "OR"],
             index=0 if ld.get("logic", "AND") == "AND" else 1,
             key=f"logic_{i}"
         )
 
-        st.markdown("**Types d'acteurs dans cet étage**")
+        st.markdown("**Types of stakeholders in this stage**")
 
         for gi, g in enumerate(ld["actor_groups"]):
             c1, c2, c3 = st.columns([2, 3, 1])
@@ -2323,7 +2320,7 @@ with st.sidebar:
 
             with c2:
                 g["codes"] = st.text_input(
-                    "Codes (séparés par ,)",
+                    "Codes (separated by ,)",
                     ",".join(g.get("codes", [])),
                     key=f"g_codes_{i}_{gi}"
                 ).replace(" ", "").split(",")
@@ -2337,9 +2334,9 @@ with st.sidebar:
                     key=f"g_min_{i}_{gi}"
                 )
 
-        if st.button("➕ Ajouter un type d'acteur", key=f"add_group_{i}"):
+        if st.button("➕ Add another type of stakehodlers", key=f"add_group_{i}"):
             ld["actor_groups"].append({
-                "label": "Nouveau type",
+                "label": "New type",
                 "codes": [],
                 "min_actors": 1,
             })
@@ -2347,7 +2344,7 @@ with st.sidebar:
 
         if i < len(st.session_state.layer_defs) - 1:
             ld["max_to_next_km"] = st.slider(
-                f"Distance max vers étage {i+2} (km)",
+                f"Maximum distance to stage {i+2} (km)",
                 1, 300,
                 int(ld.get("max_to_next_km", 30.0)),
                 1,
@@ -2355,13 +2352,13 @@ with st.sidebar:
             )
         else:
             ld["max_to_next_km"] = None
-            st.caption("Dernier étage : pas de distance vers le suivant.")
+            st.caption("Last stage : no distance to the next one.")
 
         st.divider()
 
     colA, colB = st.columns(2)
     with colA:
-        run = st.button("Lancer la detection")
+        run = st.button("Start detection")
     with colB:
         reset = st.button("Reset")
 
@@ -2386,7 +2383,7 @@ if reset:
 # DETECTION
 # ======================================================
 if run:
-    with st.spinner("Calcul des réseaux multi-étages (pivot bidirectionnel)…"):
+    with st.spinner("Calculation of symbiotic networks"):
         eprtr = load_eprtr(eprtr_source)
         uww = load_uwwtps(uww_source)
 
@@ -2401,13 +2398,13 @@ if run:
 
         for i, dfL in enumerate(layer_dfs):
             if dfL.empty:
-                st.error(f"Étape {i+1} vide après filtrage : {st.session_state.layer_defs[i]['label']}")
+                st.error(f"Stage {i+1} is empty after filtering : {st.session_state.layer_defs[i]['label']}")
                 st.stop()
 
         dfP = layer_dfs[st.session_state.pivot_layer].copy()
         pivot_labels = _labels_for_layer(dfP)
 
-        if st.session_state.pivot_mode == "Acteur pivot (selection)":
+        if st.session_state.pivot_mode == "Pivot stakeholder (selection)":
             if pivot_search.strip():
                 mask = [pivot_search.lower() in s.lower() for s in pivot_labels]
                 idx_map = [i for i, keep in enumerate(mask) if keep]
@@ -2417,7 +2414,7 @@ if run:
                 labels_f = pivot_labels
 
             if len(labels_f) == 0:
-                st.error("Aucun pivot ne correspond au filtre.")
+                st.error("No pivot matches the filter.")
                 st.stop()
 
             default_k = 0
@@ -2425,7 +2422,7 @@ if run:
                 default_k = idx_map.index(st.session_state.pivot_selected_idx)
 
             chosen_k = st.sidebar.selectbox(
-                f"Sélection du pivot (étage {st.session_state.pivot_layer+1})",
+                f"Selection of the pivot (stage {st.session_state.pivot_layer+1})",
                 options=list(range(len(labels_f))),
                 index=min(max(default_k, 0), len(labels_f) - 1),
                 format_func=lambda k: labels_f[k],
@@ -2437,14 +2434,14 @@ if run:
             pivot_indices = list(range(len(dfP)))
 
         progress_bar = None
-        if st.session_state.pivot_mode != "Acteur pivot (selection)" and len(pivot_indices) > 1:
-            progress_bar = st.progress(0.0, text=f"Calcul des réseaux : 0 / {len(pivot_indices)} pivots traités")
+        if st.session_state.pivot_mode != "Pivot stakeholder (selection)" and len(pivot_indices) > 1:
+            progress_bar = st.progress(0.0, text=f"Networks calculation : 0 / {len(pivot_indices)} treated pivots")
 
         def _update_progress(step, total):
             if progress_bar is not None and total > 0:
                 progress_bar.progress(
                     min((step + 1) / total, 1.0),
-                    text=f"Calcul des réseaux : {step + 1} / {total} pivots traités"
+                    text=f"Networks calculation : {step + 1} / {total} treated pivots"
                 )
 
         paths = build_networks_bidirectional_pivot(
@@ -2461,7 +2458,7 @@ if run:
             progress_bar.empty()
 
         if len(paths) == 0:
-            st.warning("Aucun réseau trouvé avec ces paramètres.")
+            st.warning("No network found with these settings.")
             st.session_state.paths = []
             st.session_state.centroids_df = None
             st.session_state.selected_path = None
@@ -2493,10 +2490,10 @@ layer_defs = st.session_state.layer_defs
 layer_dfs = st.session_state.layer_dfs
 
 if not paths:
-    st.info("Règle tes étages + pivot puis clique sur 'Lancer la detection'.")
+    st.info("Set your stages and pivot, then click 'Start detection'.")
     st.stop()
 
-st.success(f"✅ {len(paths)} réseaux détectés")
+st.success(f"✅ {len(paths)} detected networks")
 
 col_map, col_info = st.columns([2, 1], gap="large")
 
@@ -2560,10 +2557,10 @@ artifacts = prepare_export_artifacts(
 
 with st.sidebar:
     st.divider()
-    st.header("Partage / exports")
+    st.header("Sharing / exports")
 
-    if st.button("Préparer les exports partenaire"):
-        with st.spinner("Préparation des fichiers..."):
+    if st.button("Preparing partner exports"):
+        with st.spinner("Preparing the files..."):
             html_bytes = build_overview_map_html(
                 paths=paths,
                 layer_dfs=layer_dfs,
@@ -2599,7 +2596,7 @@ with st.sidebar:
 
     if st.session_state.export_html is not None:
         st.download_button(
-            "Télécharger la carte HTML",
+            "Download the HTML map",
             data=st.session_state.export_html,
             file_name="replication_map.html",
             mime="text/html"
@@ -2607,7 +2604,7 @@ with st.sidebar:
 
     if st.session_state.export_excel is not None:
         st.download_button(
-            "Télécharger le fichier Excel",
+            "Download the Excel file",
             data=st.session_state.export_excel,
             file_name="replication_networks.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2615,7 +2612,7 @@ with st.sidebar:
 
     if st.session_state.export_pdf is not None:
         st.download_button(
-            "Télécharger le PDF de synthèse",
+            "Download the summary PDF",
             data=st.session_state.export_pdf,
             file_name="replication_summary.pdf",
             mime="application/pdf"
@@ -2623,7 +2620,7 @@ with st.sidebar:
 
     if st.session_state.export_zip is not None:
         st.download_button(
-            "Télécharger le package complet (.zip)",
+            "Download the full package (.zip)",
             data=st.session_state.export_zip,
             file_name="replication_package.zip",
             mime="application/zip"
@@ -2644,7 +2641,7 @@ with col_map:
         # (MarkerCluster) pour garder la carte lisible et fluide ; en
         # dessous du seuil, comportement identique à avant (marqueurs directs).
         if len(centroids_df) > 150:
-            marker_target = MarkerCluster(name="Réseaux détectés").add_to(m)
+            marker_target = MarkerCluster(name="Detected networks").add_to(m)
         else:
             marker_target = m
 
@@ -2655,7 +2652,7 @@ with col_map:
                 color="#00B400",
                 fill=True,
                 fill_opacity=0.85,
-                tooltip=f"Réseau {int(r['path_id'])}"
+                tooltip=f"Network {int(r['path_id'])}"
             ).add_to(marker_target)
 
         if show_heatmap and st.session_state.heatmap_data:
@@ -2675,9 +2672,9 @@ with col_map:
             key=f"main_map_{show_heatmap}"
         )
 
-        st.markdown("### 📊 Répartition des réseaux par pays")
+        st.markdown("### 📊 Distribution of networks by country")
         if fig_country is None:
-            st.info("Pas de données pays disponibles pour tracer l’histogramme.")
+            st.info("No country data is available to plot the histogram.")
         else:
             st.plotly_chart(fig_country, use_container_width=True)
 
@@ -2788,13 +2785,13 @@ with col_map:
 # ======================================================
 with col_info:
     if st.session_state.selected_path is None:
-        st.info("Clique sur un centroïde pour afficher le détail d’un réseau.")
-        st.caption("Pivot : tu choisis l'étage pivot + (optionnel) un acteur pivot.")
+        st.info("Click on a centroid to view the details of a network.")
+        st.caption("Pivot: you choose the pivot stage + (optional) a pivot actor.")
     else:
         pid = int(st.session_state.selected_path)
         p = paths[pid]
 
-        st.subheader(f"Réseau #{pid}")
+        st.subheader(f"Network #{pid}")
 
         piv_layer = int(p.get("pivot_layer", st.session_state.pivot_layer))
         piv_idx = int(p.get("pivot_idx", 0))
@@ -2812,7 +2809,7 @@ with col_info:
                 "lon": float(piv.longitude),
             })
 
-        st.markdown("### Acteurs inclus par étage")
+        st.markdown("### Stakeholders included by stage")
         rows = []
         for li, idxs in enumerate(p["layer_sets"]):
             if idxs is None:
@@ -2833,6 +2830,6 @@ with col_info:
 
         st.dataframe(pd.DataFrame(rows), use_container_width=True, height=520)
 
-        if st.button("Retour aux centroïdes"):
+        if st.button("Back to centroids"):
             st.session_state.selected_path = None
             st.rerun()
