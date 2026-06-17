@@ -53,7 +53,7 @@ logo_b64 = _safe_b64_image("Strane-logo.png")
 
 st.markdown("""
 <style>
-[data-testid="stSidebar"] { background-color: #0AD000; }
+[data-testid="stSidebar"] { background-color: #CEFAD6; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,26 +69,6 @@ if logo_b64:
     }}
     </style>
     <img src="data:image/png;base64,{logo_b64}" class="fixed-logo">
-    """, unsafe_allow_html=True)
-
-if logo_b64:
-    st.markdown(f"""
-    <style>
-    [data-testid="stSidebar"] {{
-        background-color: #CEFAD6;
-        background-image: url("data:image/png;base64,{logo_b64}");
-        background-repeat: no-repeat;
-        background-position: right bottom;
-        background-size: 120px auto;
-        padding-bottom: 140px;
-    }}
-    </style>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-    <style>
-    [data-testid="stSidebar"] { background-color: #CEFAD6; }
-    </style>
     """, unsafe_allow_html=True)
 
 # ======================================================
