@@ -2185,24 +2185,6 @@ with st.sidebar:
     eprtr_path = st.text_input("EPRTR.csv", "EPRTR.csv")
     uww_path = st.text_input("UWWTPS.csv", "UWWTPS.csv")
 
-    eprtr_upload = st.file_uploader(
-        "…ou importer EPRTR.csv directement",
-        type="csv",
-        key="eprtr_upload",
-        help="Si un fichier est déposé ici, il remplace le chemin renseigné ci-dessus."
-    )
-    uww_upload = st.file_uploader(
-        "…ou importer UWWTPS.csv directement",
-        type="csv",
-        key="uww_upload",
-        help="Si un fichier est déposé ici, il remplace le chemin renseigné ci-dessus."
-    )
-
-    # Le fichier importé (s'il existe) est prioritaire sur le chemin texte ;
-    # pd.read_csv accepte aussi bien un chemin qu'un objet fichier en mémoire.
-    eprtr_source = eprtr_upload if eprtr_upload is not None else eprtr_path
-    uww_source = uww_upload if uww_upload is not None else uww_path
-
     st.divider()
     st.header("Display")
 
