@@ -55,7 +55,7 @@ if logo_b64:
     st.markdown(f"""
     <style>
     [data-testid="stSidebar"] {{
-        background-color: #0AD000;
+        background-color: #CEFAD6;
         background-image: url("data:image/png;base64,{logo_b64}");
         background-repeat: no-repeat;
         background-position: right bottom;
@@ -67,7 +67,7 @@ if logo_b64:
 else:
     st.markdown("""
     <style>
-    [data-testid="stSidebar"] { background-color: #0AD000; }
+    [data-testid="stSidebar"] { background-color: #CEFAD6; }
     </style>
     """, unsafe_allow_html=True)
 
