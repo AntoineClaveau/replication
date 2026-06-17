@@ -63,7 +63,7 @@ if logo_b64:
     .fixed-logo {{
         position: fixed;
         bottom: 16px;
-        right: 16px;
+        left: 16px;
         width: 100px;
         z-index: 9999;
     }}
