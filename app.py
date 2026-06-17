@@ -75,11 +75,6 @@ if "layer_defs" not in st.session_state:
                     "codes": ["10.41"],
                     "min_actors": 1,
                 },
-                {
-                    "label": "Margarine",
-                    "codes": ["10.42"],
-                    "min_actors": 1,
-                },
             ],
             "max_to_next_km": 30.0,
         },
