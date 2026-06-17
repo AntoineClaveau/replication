@@ -40,6 +40,37 @@ except (FileNotFoundError, NotADirectoryError, OSError):
 st.set_page_config(layout="wide")
 st.title("Industrial symbiosis replication analysis")
 
+import base64
+
+def _safe_b64_image(path):
+    try:
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    except Exception:
+        return None
+
+logo_b64 = _safe_b64_image("data/Strane-logo.png")
+
+if logo_b64:
+    st.markdown(f"""
+    <style>
+    [data-testid="stSidebar"] {{
+        background-color: #0AD000;
+        background-image: url("data:image/png;base64,{logo_b64}");
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        background-size: 120px auto;
+        padding-bottom: 140px;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+    [data-testid="stSidebar"] { background-color: #0AD000; }
+    </style>
+    """, unsafe_allow_html=True)
+
 # ======================================================
 # DATA STRUCTURE
 # ======================================================
