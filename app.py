@@ -602,7 +602,7 @@ def draw_centroid_heatmap_page(pdf, centroids_df):
         heat_norm = heat.copy()
 
     # Colormap avec transparence sur faibles valeurs
-    base = plt.cm.get_cmap("hot", 256)
+    base = plt.get_cmap("hot", 256)
     colors = base(np.linspace(0, 1, 256))
 
     alphas = np.zeros(256)
