@@ -2366,8 +2366,8 @@ if reset:
 # ======================================================
 if run:
     with st.spinner("Calculation of symbiotic networks"):
-        # eprtr = load_eprtr(eprtr_source)
-        # uww = load_uwwtps(uww_source)
+        eprtr = load_eprtr(eprtr_source)
+        uww = load_uwwtps(uww_source)
 
         layer_dfs = []
         for ld in st.session_state.layer_defs:
