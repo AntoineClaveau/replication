@@ -2498,7 +2498,7 @@ layer_defs = st.session_state.layer_defs
 layer_dfs = st.session_state.layer_dfs
 
 if not paths:
-    st.info("Set your stages and pivot, then click 'Start detection'.")
+    st.success("Set your stages and pivot, then click 'Start detection'.")
     st.stop()
 
 st.success(f"✅ {len(paths)} detected networks")
