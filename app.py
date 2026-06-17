@@ -66,7 +66,7 @@ if "selected_path" not in st.session_state:
 if "layer_defs" not in st.session_state:
     st.session_state.layer_defs = [
         {
-            "label": "Émetteur A (EPRTR)",
+            "label": "Emitter A (EPRTR)",
             "source": "EPRTR",
             "logic": "AND",
             "actor_groups": [
@@ -84,7 +84,7 @@ if "layer_defs" not in st.session_state:
             "max_to_next_km": 30.0,
         },
         {
-            "label": "Intermédiaire (UWWTPS)",
+            "label": "Intermediate (UWWTPS)",
             "source": "UWWTPS",
             "codes": "",
             "cap_min": 0.0,
@@ -93,7 +93,7 @@ if "layer_defs" not in st.session_state:
             "max_to_next_km": 50.0,
         },
         {
-            "label": "Utilisateur (EPRTR)",
+            "label": "End-user (EPRTR)",
             "source": "EPRTR",
             "codes": "20.16",
             "min_actors": 1,
