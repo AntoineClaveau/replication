@@ -49,7 +49,7 @@ def _safe_b64_image(path):
     except Exception:
         return None
 
-logo_b64 = _safe_b64_image("data/Strane-logo.png")
+logo_b64 = _safe_b64_image("Strane-logo.png")
 
 if logo_b64:
     st.markdown(f"""
